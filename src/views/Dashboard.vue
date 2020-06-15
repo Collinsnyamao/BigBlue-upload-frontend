@@ -78,7 +78,8 @@
                                 <ul class="nav nav-pills justify-content-end">
                                     <li class="nav-item mr-2 mr-md-0">
                                         <a class="nav-link py-2 px-3 active btn btn-link" @click="clearUploads">
-                                            <span class="d-none d-md-block"><i class="fa fa-repeat" aria-hidden="true"></i>clear</span>
+                                            <span class="d-none d-md-block"><i class="ni ni-scissors"
+                                                                               aria-hidden="true"></i> clear</span>
                                             <span class="d-md-none">x</span>
                                         </a>
                                     </li>
@@ -131,15 +132,20 @@
                         </bar-chart>-->
 
                         <div>
-                            <ul class="list-group list-group-flush" v-for="upload in uploads" :key="uploads.filename">
+                            <ul class="list-group list-group-flush" v-for="upload in uploads"
+                                v-bind:key="upload">
                                 <li class="list-group-item">
                                     <div class="col">
                                         <h6 class="text-uppercase mb-1"> {{ upload.filename }}</h6>
-                                        <h6 class="text-muted mb-1">{{ upload.uploadStatus }}</h6>
-                                        <div class="progress">
+                                        <h6 class="text-muted mb-1">{{ upload.uploadMessage }}</h6>
+                                        <div class="progress" v-if="upload.uploadStatus">
                                             <div class="progress-bar progress-bar-striped progress-bar-animated bg-info"
-                                                 role="progressbar" style="width: 100%" aria-valuenow="100"
-                                                 aria-valuemin="0" aria-valuemax="100"></div>
+                                                 role="progressbar"
+                                                 style="width: 100%"
+                                                 aria-valuenow="100"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100"
+                                            ></div>
                                         </div>
                                     </div>
                                 </li>
@@ -153,10 +159,12 @@
                 <div>
                     <modal :show.sync="modal0">
                         <template slot="header">
-                            <h5 class="modal-title" id="exampleModalLabel">Financial Upload</h5>
+                            <h3 class="modal-title" id="exampleModalLabel" style="margin-top: 15px; color: #407ec1;">
+                                Financial Upload</h3>
                         </template>
                         <div>
                             <vue-dropzone
+                                    v-on:vdropzone-sending="sendingEvent"
                                     ref="redDropZone"
                                     id="dropzone2"
                                     :options="dropzoneOptions"
@@ -165,9 +173,18 @@
                                     @vdropzone-error="uploadFailed2"
                             ></vue-dropzone>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <select v-model="selected" @change="onChange($event)" class="col-md-12 custom-select" style="margin-top: 20px;">
+                                    <option v-for="bank in banksList" v-bind:key="bank">
+                                        {{bank}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                         <template slot="footer">
-                            <base-button type="secondary" @click="modal0 = false">Close</base-button>
-                            <base-button type="primary">Save changes</base-button>
+                            <base-button type="secondary" @click="clearUploads2">Clear</base-button>
+                            <base-button type="primary" style="background-color: #407ec1;" @click="startProcessingQueue">Submit</base-button>
                         </template>
                     </modal>
 
@@ -201,6 +218,7 @@ import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 // Tables
 import SocialTrafficTable from './Dashboard/SocialTrafficTable';
 import PageVisitsTable from './Dashboard/PageVisitsTable';
+import axios from 'axios';
 
 export default {
     components: {
@@ -209,9 +227,13 @@ export default {
         PageVisitsTable,
         SocialTrafficTable,
         vueDropzone: vue2Dropzone,
+        axios
     },
     data() {
         return {
+            banksList: [],
+            selected: '',
+            selected2: '',
             modal0: false,
             bigLineChart: {
                 allData: [
@@ -240,17 +262,21 @@ export default {
                 maxFilesize: 100,
                 headers: {"My-Awesome-Header": "header value"},
                 thumbnailHeight: 150,
-                thumbnailMethod: 'crop'
+                thumbnailMethod: 'crop',
+                addRemoveLinks: true
             },
-            uploads: [{
-                number: '',
-                filename: 'file 1',
-                uploadStatus: true,
-                uploadTime: 600
-            }]
+            uploads: []
         };
     },
     methods: {
+        onChange(event) {
+            console.log(event.target.value);
+            this.selected2 = event.target.value;
+        },
+        sendingEvent (file, xhr, formData) {
+            formData.append('bankname', '1234');
+            console.log(this.selected2);
+        },
         initBigChart(index) {
             let chartData = {
                 datasets: [
@@ -274,7 +300,15 @@ export default {
 
                     if (self.uploads[i].filename == file.name) {
                         console.log('found one');
-                        self.uploads[i].uploadStatus = 'Upload completed';
+
+                        if (response === 'file saved'){
+                            self.uploads[i].uploadStatus = true;
+                            self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
+                            self.checker(file.name);
+                        }else if (response === 'file exists'){
+                            self.uploads[i].uploadStatus = false;
+                            self.uploads[i].uploadMessage = 'File already exists.';
+                        }
                     }
                 }
             }, 1000);
@@ -292,7 +326,15 @@ export default {
 
                     if (self.uploads[i].filename == file.name) {
                         console.log('found one');
-                        self.uploads[i].uploadStatus = 'Upload completed';
+
+                        if (response === 'file saved'){
+                            self.uploads[i].uploadStatus = true;
+                            self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
+                            self.checker(file.name);
+                        }else if (response === 'file exists'){
+                            self.uploads[i].uploadStatus = false;
+                            self.uploads[i].uploadMessage = 'File already exists.';
+                        }
                     }
                 }
             }, 1000);
@@ -310,7 +352,8 @@ export default {
             console.log(response, 'has completed the upload');
             this.uploads.push({
                 filename: response.name,
-                uploadStatus: 'Uploading...',
+                uploadStatus: true,
+                uploadMessage: 'Uploading...',
                 uploadTime: 500,
                 number: this.uploads.length + 1
             });
@@ -319,7 +362,8 @@ export default {
             console.log(response, 'has completed the upload');
             this.uploads.push({
                 filename: response.name,
-                uploadStatus: 'Uploading...',
+                uploadStatus: true,
+                uploadMessage: 'Uploading...',
                 uploadTime: 500,
                 number: this.uploads.length + 1
             });
@@ -327,14 +371,68 @@ export default {
         clearUploads() {
             this.$refs.blueDropZone.removeAllFiles();
             console.log('clearing files');
+            this.uploads = [];
+        },
+        clearUploads2() {
+            this.$refs.blueDropZone.removeAllFiles();
+            console.log('clearing files');
+            this.uploads = [];
         },
         clearUploads2() {
             this.$refs.redDropZone.removeAllFiles();
             console.log('clearing files');
+            this.uploads = [];
+        },
+        getBanks() {
+            axios.post('http://127.0.0.1:3000/banks/list', {
+                firstName: 'Finn'
+            })
+                    .then((response) => {
+                        console.log(response.data);
+                        for (let c = 0; c < response.data.length; c++) {
+                            this.banksList.push(response.data[c].bankName);
+                            console.log(response.data[c].bankName);
+                        }
+
+                    }, (error) => {
+                        console.log(error);
+                    });
+        },
+        checker(filename) {
+            axios.post('http://localhost:3000/upload/checker', {
+                filename: filename
+            })
+                    .then((response) => {
+                        console.log(response.data);
+                        let recover = this;
+                        if (response.data.status === false) {
+                            console.log(filename, ' not yet');
+                            setTimeout(function () {
+                                recover.checker(filename);
+                            }, 1000);
+                        } else if (response.data.status === true) {
+                            console.log('true');
+                            for (let t = 0; t < recover.uploads.length; t++) {
+                                if (recover.uploads[t].filename === filename) {
+                                    recover.uploads[t].uploadStatus = false;
+                                    recover.uploads[t].uploadMessage = 'Ingestion has been completed';
+                                }
+                            }
+                        }
+                    }, (error) => {
+                        console.log(error);
+                    });
+        },
+        startProcessingQueue(){
+            this.$refs.redDropZone.processQueue();
         }
     },
     mounted() {
         this.initBigChart(0);
+        this.getBanks();
+        this.$refs.redDropZone.setOption('url','http://127.0.0.1:3000/upload/financial');
+        this.$refs.redDropZone.setOption('autoProcessQueue',false);
+        this.$refs.redDropZone.setOption('acceptedFiles','application/pdf');
     }
 };
 </script>
@@ -349,5 +447,6 @@ export default {
 
 .dropzone .dz-message {
     margin: 8em 0;
+    color: #407ec1;
 }
 </style>
