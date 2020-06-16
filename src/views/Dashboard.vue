@@ -83,6 +83,9 @@
                                             <span class="d-md-none">x</span>
                                         </a>
                                     </li>
+                                    <!--FINANCIAL MODULE-->
+
+
                                     <!--<li class="nav-item">
                                         <a class="nav-link py-2 px-3"
                                            href="#"
@@ -92,6 +95,9 @@
                                             <span class="d-md-none"><i class="ni ni-money-coins"></i></span>
                                         </a>
                                     </li>-->
+
+
+                                    <!--FINANCIAL MODULE-->
                                 </ul>
                             </div>
                         </div>
@@ -155,6 +161,10 @@
                     </card>
                 </div>
             </div>
+            <!--FINANCIAL MODULE-->
+
+
+
             <!--<div class="row">
                 <div>
                     <modal :show.sync="modal0">
@@ -190,6 +200,10 @@
 
                 </div>
             </div>-->
+
+            <!--FINANCIAL MODULE-->
+
+
             <!-- End charts-->
 
             <!--Tables-->
