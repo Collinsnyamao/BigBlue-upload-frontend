@@ -260,7 +260,7 @@ export default {
                 url: 'http://127.0.0.1:3000/upload/new',
                 thumbnailWidth: 150,
                 maxFilesize: 100,
-                headers: {"My-Awesome-Header": "header value"},
+                headers: {"Accept": "*"},
                 thumbnailHeight: 150,
                 thumbnailMethod: 'crop',
                 addRemoveLinks: true
@@ -272,10 +272,14 @@ export default {
         onChange(event) {
             console.log(event.target.value);
             this.selected2 = event.target.value;
+            this.$refs.redDropZone.setOption('paramName', this.selected2);
         },
         sendingEvent (file, xhr, formData) {
-            formData.append('bankname', '1234');
-            console.log(this.selected2);
+            let myt = JSON.stringify('1234');
+            this.$refs.redDropZone.setOption('paramName', this.selected2);
+            for (var pair of formData.entries()) {
+                console.log(pair[0]+ ', ' + pair[1]);
+            }
         },
         initBigChart(index) {
             let chartData = {
