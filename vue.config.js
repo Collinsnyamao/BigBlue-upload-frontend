@@ -7,6 +7,7 @@ module.exports = {
     https: {
       key: fs.readFileSync('./certs/key.pem'),
       cert: fs.readFileSync('./certs/cert.pem'),
+      passphrase: 'a11Black$'
     },
     clientLogLevel: 'silent'
   },
