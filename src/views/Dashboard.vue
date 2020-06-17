@@ -257,7 +257,7 @@ export default {
                 }
             },
             dropzoneOptions: {
-                url: 'http://127.0.0.1:3000/upload/new',
+                url: 'https://127.0.0.1:3002/upload/new',
                 thumbnailWidth: 150,
                 maxFilesize: 100,
                 headers: {"Accept": "*"},
@@ -378,17 +378,11 @@ export default {
             this.uploads = [];
         },
         clearUploads2() {
-            this.$refs.blueDropZone.removeAllFiles();
-            console.log('clearing files');
-            this.uploads = [];
-        },
-        clearUploads2() {
             this.$refs.redDropZone.removeAllFiles();
             console.log('clearing files');
-            this.uploads = [];
         },
         getBanks() {
-            axios.post('http://127.0.0.1:3000/banks/list', {
+            axios.post('https://127.0.0.1:3002/banks/list', {
                 firstName: 'Finn'
             })
                     .then((response) => {
@@ -403,7 +397,7 @@ export default {
                     });
         },
         checker(filename) {
-            axios.post('http://localhost:3000/upload/checker', {
+            axios.post('https://127.0.0.1:3002/upload/checker', {
                 filename: filename
             })
                     .then((response) => {
@@ -434,7 +428,7 @@ export default {
     mounted() {
         this.initBigChart(0);
         this.getBanks();
-        this.$refs.redDropZone.setOption('url','http://127.0.0.1:3000/upload/financial');
+        this.$refs.redDropZone.setOption('url','https://127.0.0.1:3002/upload/financial');
         this.$refs.redDropZone.setOption('autoProcessQueue',false);
         this.$refs.redDropZone.setOption('acceptedFiles','application/pdf');
     }
