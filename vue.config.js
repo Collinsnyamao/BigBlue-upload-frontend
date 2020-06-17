@@ -5,8 +5,8 @@ const isProd = process.env.NODE_ENV === "production";
 module.exports = {
   devServer: {
     https: {
-      key: fs.readFileSync('./certs/key.pem'),
-      cert: fs.readFileSync('./certs/cert.pem'),
+      key: fs.readFileSync('./certs/localhost.key'),
+      cert: fs.readFileSync('./certs/localhost.cert'),
       passphrase: 'a11Black$'
     },
     clientLogLevel: 'silent'
