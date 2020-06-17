@@ -1,9 +1,13 @@
 const webpack = require('webpack');
+const fs = require('fs');
 const isProd = process.env.NODE_ENV === "production";
 
 module.exports = {
   devServer: {
-    https: true,
+    https: {
+      key: fs.readFileSync('./certs/key.pem'),
+      cert: fs.readFileSync('./certs/cert.pem'),
+    },
     clientLogLevel: 'silent'
   },
   configureWebpack: {
