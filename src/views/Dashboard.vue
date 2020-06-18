@@ -220,7 +220,7 @@ import SocialTrafficTable from './Dashboard/SocialTrafficTable';
 import PageVisitsTable from './Dashboard/PageVisitsTable';
 import axios from 'axios';
 
-let address = 'https://localhost:3002'
+let address = 'https://0.0.0.0:3002'
 export default {
     components: {
         LineChart,
