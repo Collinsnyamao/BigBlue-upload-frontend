@@ -231,6 +231,7 @@ import SocialTrafficTable from './Dashboard/SocialTrafficTable';
 import PageVisitsTable from './Dashboard/PageVisitsTable';
 import axios from 'axios';
 
+let address = 'https://10.30.20.127:3002'
 export default {
     components: {
         LineChart,
@@ -268,7 +269,7 @@ export default {
                 }
             },
             dropzoneOptions: {
-                url: 'https://127.0.0.1:3002/upload/new',
+                url: address + '/upload/new',
                 thumbnailWidth: 150,
                 maxFilesize: 100,
                 headers: {"Accept": "*"},
@@ -312,10 +313,8 @@ export default {
             let self = this;
             setTimeout(function () {
                 for (let i = 0; i < self.uploads.length; i++) {
-
                     if (self.uploads[i].filename == file.name) {
                         console.log('found one');
-
                         if (response === 'file saved'){
                             self.uploads[i].uploadStatus = true;
                             self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
@@ -338,10 +337,8 @@ export default {
             let self = this;
             setTimeout(function () {
                 for (let i = 0; i < self.uploads.length; i++) {
-
                     if (self.uploads[i].filename == file.name) {
                         console.log('found one');
-
                         if (response === 'file saved'){
                             self.uploads[i].uploadStatus = true;
                             self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
@@ -393,7 +390,7 @@ export default {
             console.log('clearing files');
         },
         getBanks() {
-            axios.post('https://127.0.0.1:3002/banks/list', {
+            axios.post(address + '/banks/list', {
                 firstName: 'Finn'
             })
                     .then((response) => {
@@ -402,13 +399,12 @@ export default {
                             this.banksList.push(response.data[c].bankName);
                             console.log(response.data[c].bankName);
                         }
-
                     }, (error) => {
                         console.log(error);
                     });
         },
         checker(filename) {
-            axios.post('https://127.0.0.1:3002/upload/checker', {
+            axios.post(address + '/upload/checker', {
                 filename: filename
             })
                     .then((response) => {
@@ -439,7 +435,7 @@ export default {
     mounted() {
         this.initBigChart(0);
         this.getBanks();
-        this.$refs.redDropZone.setOption('url','https://127.0.0.1:3002/upload/financial');
+        this.$refs.redDropZone.setOption('url',address + '/upload/financial');
         this.$refs.redDropZone.setOption('autoProcessQueue',false);
         this.$refs.redDropZone.setOption('acceptedFiles','application/pdf');
     }
