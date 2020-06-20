@@ -9,11 +9,11 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: 'dashboard',
+      redirect: '/',
       component: DashboardLayout,
       children: [
         {
-          path: '/dashboard',
+          path: '/',
           name: 'dashboard',
           // route level code-splitting
           // this generates a separate chunk (about.[hash].js) for this route
