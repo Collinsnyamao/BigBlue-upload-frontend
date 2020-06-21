@@ -531,11 +531,11 @@ export default {
         if (tmp.length == 2)
           getVars[tmp[0]] = tmp[1];
       });
-      console.log(getVars['userId']);
+      console.log('vars',getVars['userId']);
       this.userID = getVars['userId'];
       let catVar = getVars['userID'].replace('#/','');
       let mystring = getVars['userID'].split('#/').join('');
-      console.log(mystring);
+      console.log('mystring',mystring);
       this.$refs.blueDropZone.setOption('headers', {"name" : getVars['userId']});
       this.$refs.redDropZone.setOption('headers', {"name" : getVars['userId']});
       // do
