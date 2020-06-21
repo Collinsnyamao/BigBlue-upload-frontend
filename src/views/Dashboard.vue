@@ -534,13 +534,13 @@ export default {
       getVars['userID'] = getVars['userId'].replace('/','');
       getVars['userID'] = getVars['userId'].replace('#','');
       console.log('vars',getVars['userId']);
-      this.userID = getVars['userId'];
       let catVar = getVars['userID'].replace('#/','');
       let mystring = getVars['userID'].split('#/').join('');
       mystring = mystring.replace('/','');
       console.log('mystring',mystring);
-      this.$refs.blueDropZone.setOption('headers', {"name" : getVars['userId']});
-      this.$refs.redDropZone.setOption('headers', {"name" : getVars['userId']});
+      this.userID = mystring;
+      this.$refs.blueDropZone.setOption('headers', {"name" : mystring});
+      this.$refs.redDropZone.setOption('headers', {"name" : mystring});
       // do
     }
   }
