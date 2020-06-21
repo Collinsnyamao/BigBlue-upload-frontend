@@ -248,7 +248,7 @@ import SocialTrafficTable from './Dashboard/SocialTrafficTable';
 import PageVisitsTable from './Dashboard/PageVisitsTable';
 import axios from 'axios';
 
-let address = 'https://10.30.20.89:3002';
+let address = 'https://127.0.0.1:3002';
 export default {
   components: {
     LineChart,
@@ -309,6 +309,13 @@ export default {
     };
   },
   methods: {
+    filenamechecker2(){
+      if (this.newFileName){
+        return this.newFileName;
+      }else {
+        return this.newFileName2;
+      }
+    },
     processingFile(file){
       console.log('processing ' + file.name);
       this.modal1 = true;
@@ -356,7 +363,9 @@ export default {
             if (response === 'file saved') {
               self.uploads[i].uploadStatus = true;
               self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
-              self.checker(file.name);
+              let fileextension = "." + file.name.toLowerCase().split('.').pop();
+              console.log(self.userID+ "*" + self.newFileName + fileextension);
+              self.checker(self.userID +"*"+ self.newFileName + fileextension);
             } else if (response === 'file exists') {
               self.uploads[i].uploadStatus = false;
               self.uploads[i].uploadMessage = 'File already exists.';
@@ -382,7 +391,10 @@ export default {
             if (response === 'file saved') {
               self.uploads[i].uploadStatus = true;
               self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
-              self.checker(file.name);
+              let fileextension = "." + file.name.toLowerCase().split('.').pop();
+              console.log(self.userID+ "*" + self.newFileName2 + fileextension);
+              self.checker(self.userID+ "*" + self.newFileName2 + fileextension);
+              console.log('checking ',file.name);
             } else if (response === 'file exists') {
               self.uploads[i].uploadStatus = false;
               self.uploads[i].uploadMessage = 'File already exists.';
@@ -421,6 +433,7 @@ export default {
     },
     uploadCompleted2(response) {
       console.log(response, 'has completed the upload');
+      let fileextension = "." + response.name.toLowerCase().split('.').pop();
       this.uploads.push({
         filename: response.name,
         tempFileName: this.filenamechecker() + fileextension,
@@ -429,6 +442,7 @@ export default {
         uploadTime: 500,
         number: this.uploads.length + 1
       });
+      this.modal0 = false;
     },
     clearUploads() {
       this.$refs.blueDropZone.removeAllFiles();
@@ -468,8 +482,12 @@ export default {
               }, 1000);
             } else if (response.data.status === true) {
               console.log('true');
+              let filestring = filename.split("*");
+              let filet = filestring[1];
+              console.log(filet);
               for (let t = 0; t < recover.uploads.length; t++) {
-                if (recover.uploads[t].filename === filename) {
+                console.log(recover.uploads[t].filename);
+                if (recover.uploads[t].tempFileName === filet) {
                   recover.uploads[t].uploadStatus = false;
                   recover.uploads[t].uploadMessage = 'Ingestion has been completed';
                 }
