@@ -201,7 +201,7 @@
 
           <modal :show.sync="modal1">
             <template slot="header">
-              <h3 class="modal-title" id="exampleModalLabel" style="margin-top: 15px; color: #407ec1;"></h3>
+              <h3 class="modal-title" id="exampleModalLabel" style="margin-top: 15px; color: #407ec1;">Rename file</h3>
             </template>
             <div class="col-md-12">
               <div style="margin-bottom: 20px;">
@@ -297,7 +297,7 @@ export default {
         headers: {
           "Accept": "*"
         },
-        /*dictDefaultMessage: "Drop files here <br>or click to upload...",*/
+        dictDefaultMessage: "Click to add file ...<br>or drag and drop to upload!",
         params: {'userID':'xyz','fileWrite':'aaa'},
         thumbnailHeight: 150,
         thumbnailMethod: 'crop',
