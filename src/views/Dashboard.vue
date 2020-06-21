@@ -139,6 +139,9 @@
                   <div class="col">
                     <h6 class="text-uppercase mb-1"> {{ upload.tempFileName }}</h6>
                     <h6 class="text-muted mb-1">{{ upload.uploadMessage }}</h6>
+                    <div>
+                      <p>Meta : {{ upload.tempFileName }}</p>
+                    </div>
                     <div class="progress" v-if="upload.uploadStatus">
                       <div class="progress-bar progress-bar-striped progress-bar-animated bg-info"
                            role="progressbar"
