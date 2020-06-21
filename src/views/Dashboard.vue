@@ -531,10 +531,10 @@ export default {
         if (tmp.length == 2)
           getVars[tmp[0]] = tmp[1];
       });
-      console.log(getVars['userid']);
-      this.userID = getVars['userid'];
-      this.$refs.blueDropZone.setOption('headers', {"name" : getVars['userid']});
-      this.$refs.redDropZone.setOption('headers', {"name" : getVars['userid']});
+      console.log(getVars['userId']);
+      this.userID = getVars['userId'];
+      this.$refs.blueDropZone.setOption('headers', {"name" : getVars['userId']});
+      this.$refs.redDropZone.setOption('headers', {"name" : getVars['userId']});
       // do
     }
   }
