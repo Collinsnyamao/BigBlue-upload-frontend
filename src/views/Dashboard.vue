@@ -531,6 +531,7 @@ export default {
         if (tmp.length == 2)
           getVars[tmp[0]] = tmp[1];
       });
+      getVars['userID'] = getVars['userId'].replace('/','');
       console.log('vars',getVars['userId']);
       this.userID = getVars['userId'];
       let catVar = getVars['userID'].replace('#/','');
