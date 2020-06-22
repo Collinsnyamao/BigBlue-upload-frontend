@@ -175,10 +175,12 @@
                   v-on:vdropzone-sending="sendingEvent"
               ></vue-dropzone>
             </div>
-            <div class="row">
+            <div class="row" style="margin-top: 20px;">
               <div class="col-md-12">
+                <p class="text text-danger" v-if="errorStatus">{{ errorInfo }}</p>
                 <select v-model="selected" @change="onChange($event)" class="col-md-12 custom-select"
-                        style="margin-top: 20px;">
+
+                >
                   <option v-for="bank in banksList" v-bind:key="bank">
                     {{ bank }}
                   </option>
@@ -198,10 +200,9 @@
           </modal>
 
 
-
           <modal :show.sync="modal1">
             <template slot="header">
-              <h3 class="modal-title" id="exampleModalLabel" style="margin-top: 15px; color: #407ec1;">Rename file</h3>
+              <h3 class="modal-title" id="exampleModalLabel2" style="margin-top: 15px; color: #407ec1;">Rename file</h3>
             </template>
             <div class="col-md-12">
               <div style="margin-bottom: 20px;">
@@ -263,11 +264,13 @@ export default {
       banksList: [],
       selected: '',
       selected2: '',
-      userID:'',
+      userID: '',
+      errorStatus: '',
+      errorInfo:'',
       modal0: false,
       fileProps: [],
-      newFileName:'',
-      newFileName2:'',
+      newFileName: '',
+      newFileName2: '',
       modal1: false,
       bigLineChart: {
         allData: [
@@ -298,7 +301,7 @@ export default {
           "Accept": "*"
         },
         dictDefaultMessage: "Click to add file ...<br>or drag and drop to upload!",
-        params: {'userID':'xyz','fileWrite':'aaa'},
+        params: {'userID': 'xyz', 'fileWrite': 'aaa'},
         thumbnailHeight: 150,
         thumbnailMethod: 'crop',
         autoProcessQueue: false,
@@ -310,14 +313,14 @@ export default {
     };
   },
   methods: {
-    filenamechecker2(){
-      if (this.newFileName){
+    filenamechecker2() {
+      if (this.newFileName) {
         return this.newFileName;
-      }else {
+      } else {
         return this.newFileName2;
       }
     },
-    processingFile(file){
+    processingFile(file) {
       console.log('processing ' + file.name);
       this.modal1 = true;
       this.fileProps.filename = file.name;
@@ -326,7 +329,7 @@ export default {
       console.log("renameFile", file);
       return "." + file.name.toLowerCase().split('.').pop()
     },*/
-    smallfxn(){
+    smallfxn() {
       return this.newFileName + '.png';
     },
     onChange(event) {
@@ -336,6 +339,9 @@ export default {
     },
     sendingEvent(file, xhr, formData) {
       formData.append('userID', 'user123');
+      if (this.selected2 === '') {
+        this.$refs.redDropZone.setOption('paramName', 'unspecified bank');
+      }
     },
     initBigChart(index) {
       let chartData = {
@@ -365,8 +371,8 @@ export default {
               self.uploads[i].uploadStatus = true;
               self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
               let fileextension = "." + file.name.toLowerCase().split('.').pop();
-              console.log(self.userID+ "*" + self.newFileName + fileextension);
-              self.checker(self.userID +"*"+ self.newFileName + fileextension);
+              console.log(self.userID + "*" + self.newFileName + fileextension);
+              self.checker(self.userID + "*" + self.newFileName + fileextension);
             } else if (response === 'file exists') {
               self.uploads[i].uploadStatus = false;
               self.uploads[i].uploadMessage = 'File already exists.';
@@ -393,9 +399,9 @@ export default {
               self.uploads[i].uploadStatus = true;
               self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
               let fileextension = "." + file.name.toLowerCase().split('.').pop();
-              console.log(self.userID+ "*" + self.newFileName2 + fileextension);
-              self.checker(self.userID+ "*" + self.newFileName2 + fileextension);
-              console.log('checking ',file.name);
+              console.log(self.userID + "*" + self.newFileName2 + fileextension);
+              self.checker(self.userID + "*" + self.newFileName2 + fileextension);
+              console.log('checking ', file.name);
             } else if (response === 'file exists') {
               self.uploads[i].uploadStatus = false;
               self.uploads[i].uploadMessage = 'File already exists.';
@@ -425,11 +431,18 @@ export default {
         number: this.uploads.length + 1
       });
     },
-    filenamechecker(){
-      if (this.newFileName){
+    filenamechecker() {
+      if (this.newFileName) {
         return this.newFileName;
-      }else {
+      } else {
+        return 'default';
+      }
+    },
+    filenamechecker23() {
+      if (this.newFileName) {
         return this.newFileName2;
+      } else {
+        return 'default';
       }
     },
     uploadCompleted2(response) {
@@ -437,7 +450,7 @@ export default {
       let fileextension = "." + response.name.toLowerCase().split('.').pop();
       this.uploads.push({
         filename: response.name,
-        tempFileName: this.filenamechecker() + fileextension,
+        tempFileName: this.filenamechecker23() + fileextension,
         uploadStatus: true,
         uploadMessage: 'Uploading...',
         uploadTime: 500,
@@ -499,18 +512,43 @@ export default {
           });
     },
     startProcessingQueue() {
-      this.$refs.redDropZone.setOption('headers', {"extension" : this.userID+'*'+this.newFileName2});
-      this.$refs.redDropZone.processQueue();
 
-      console.log('id ', this.userID+'*'+this.newFileName2);
+      if (this.selected2 === '') {
+        console.log('empty');
+        this.errorStatus = true;
+        this.errorInfo = 'Associated bank input empty';
+      } else {
+        console.log('not empty');
+        if (this.newFileName2) {
+          this.$refs.redDropZone.setOption('headers', {"extension": this.userID + '*' + this.newFileName2});
+          this.$refs.redDropZone.processQueue();
+
+          console.log('id ', this.userID + '*' + this.newFileName2);
+        } else {
+          this.$refs.redDropZone.setOption('headers', {"extension": this.userID + '*' + 'default'});
+          this.$refs.redDropZone.processQueue();
+
+          console.log('id ', this.userID + '*' + this.newFileName2);
+        }
+      }
     },
     startProcessingQueue2() {
-      this.$refs.blueDropZone.setOption('headers', {"id" : this.userID+'*'+this.newFileName});
-      this.modal1 = false;
-      if (this.newFileName){
-        this.$refs.blueDropZone.processQueue();
-      }else if (!this.newFileName){
-        this.$refs.blueDropZone.processQueue();
+      if (this.newFileName) {
+        this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + this.newFileName});
+        this.modal1 = false;
+        if (this.newFileName) {
+          this.$refs.blueDropZone.processQueue();
+        } else if (!this.newFileName) {
+          this.$refs.blueDropZone.processQueue();
+        }
+      } else {
+        this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + 'default'});
+        this.modal1 = false;
+        if (this.newFileName) {
+          this.$refs.blueDropZone.processQueue();
+        } else if (!this.newFileName) {
+          this.$refs.blueDropZone.processQueue();
+        }
       }
     }
   },
@@ -532,16 +570,16 @@ export default {
         if (tmp.length == 2)
           getVars[tmp[0]] = tmp[1];
       });
-      getVars['userID'] = getVars['userId'].replace('/','');
-      getVars['userID'] = getVars['userId'].replace('#','');
-      console.log('vars',getVars['userId']);
-      let catVar = getVars['userID'].replace('#/','');
+      getVars['userID'] = getVars['userId'].replace('/', '');
+      getVars['userID'] = getVars['userId'].replace('#', '');
+      console.log('vars', getVars['userId']);
+      let catVar = getVars['userID'].replace('#/', '');
       let mystring = getVars['userID'].split('#/').join('');
-      mystring = mystring.replace('/','');
-      console.log('mystring',mystring);
+      mystring = mystring.replace('/', '');
+      console.log('mystring', mystring);
       this.userID = mystring;
-      this.$refs.blueDropZone.setOption('headers', {"name" : mystring});
-      this.$refs.redDropZone.setOption('headers', {"name" : mystring});
+      this.$refs.blueDropZone.setOption('headers', {"name": mystring});
+      this.$refs.redDropZone.setOption('headers', {"name": mystring});
       // do
     }
   }
