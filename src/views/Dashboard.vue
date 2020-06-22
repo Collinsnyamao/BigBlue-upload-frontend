@@ -303,7 +303,8 @@ export default {
         thumbnailMethod: 'crop',
         autoProcessQueue: false,
         addRemoveLinks: true,
-        uploadMultiple: false
+        uploadMultiple: false,
+        maxFiles: 1
       },
       uploads: []
     };
