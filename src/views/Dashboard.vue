@@ -160,7 +160,7 @@
         <div>
           <modal :show.sync="modal0">
             <template slot="header">
-              <h3 class="modal-title" id="exampleModalLabel" style="margin-top: 15px; color: #407ec1;">
+              <h3 class="modal-title" id="exampleModalLabel2" style="margin-top: 15px; color: #407ec1;">
                 Financial Upload</h3>
             </template>
             <div>
@@ -297,7 +297,7 @@ export default {
         headers: {
           "Accept": "*"
         },
-        dictDefaultMessage: "Click to add file ...<br>or drag and drop to upload!",
+        dictDefaultMessage: "Click to add file ...<br> or drag and drop to upload!",
         params: {'userID':'xyz','fileWrite':'aaa'},
         thumbnailHeight: 150,
         thumbnailMethod: 'crop',
