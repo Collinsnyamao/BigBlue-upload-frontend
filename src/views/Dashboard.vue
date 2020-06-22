@@ -1,4 +1,5 @@
 /* eslint-disable */
+<!--suppress ALL -->
 <template>
   <div>
     <!--<base-header type="gradient-success" class="pb-6 pb-8 pt-5 pt-md-8">
@@ -172,6 +173,7 @@
                   @vdropzone-complete="uploadCompleted2"
                   @vdropzone-success="uploadSuccess2"
                   @vdropzone-error="uploadFailed2"
+                  @vdropzone-file-added="fileAdded"
                   v-on:vdropzone-sending="sendingEvent"
               ></vue-dropzone>
             </div>
@@ -267,6 +269,7 @@ export default {
       userID: '',
       errorStatus: '',
       errorInfo:'',
+      originalFilename:'',
       modal0: false,
       fileProps: [],
       newFileName: '',
@@ -324,6 +327,9 @@ export default {
       console.log('processing ' + file.name);
       this.modal1 = true;
       this.fileProps.filename = file.name;
+      let filebodyname2 = file.name.split('.');
+      console.log(filebodyname2[0] , 'has been added to workspace');
+      this.originalFilename = filebodyname2[0];
     },
     /*renameFile(file) {
       console.log("renameFile", file);
@@ -372,7 +378,13 @@ export default {
               self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
               let fileextension = "." + file.name.toLowerCase().split('.').pop();
               console.log(self.userID + "*" + self.newFileName + fileextension);
-              self.checker(self.userID + "*" + self.newFileName + fileextension);
+              if (self.newFileName === ''){
+                self.checker(self.userID + "*" + self.originalFilename + fileextension);
+                console.log('check for ' + self.userID + "*" + self.originalFilename + fileextension);
+              }else {
+                self.checker(self.userID + "*" + self.newFileName + fileextension);
+                console.log(self.userID + "*" + self.newFileName + fileextension);
+              }
             } else if (response === 'file exists') {
               self.uploads[i].uploadStatus = false;
               self.uploads[i].uploadMessage = 'File already exists.';
@@ -400,7 +412,11 @@ export default {
               self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
               let fileextension = "." + file.name.toLowerCase().split('.').pop();
               console.log(self.userID + "*" + self.newFileName2 + fileextension);
-              self.checker(self.userID + "*" + self.newFileName2 + fileextension);
+              if (self.newFileName2 === ''){
+                self.checker(self.userID + "*" + self.originalFilename + fileextension);
+              }else {
+                self.checker(self.userID + "*" + self.newFileName2 + fileextension);
+              }
               console.log('checking ', file.name);
             } else if (response === 'file exists') {
               self.uploads[i].uploadStatus = false;
@@ -435,14 +451,14 @@ export default {
       if (this.newFileName) {
         return this.newFileName;
       } else {
-        return 'default';
+        return this.originalFilename;
       }
     },
     filenamechecker23() {
       if (this.newFileName) {
         return this.newFileName2;
       } else {
-        return 'default';
+        return this.originalFilename;
       }
     },
     uploadCompleted2(response) {
@@ -483,6 +499,7 @@ export default {
           });
     },
     checker(filename) {
+      console.log('checking with : ', filename);
       axios.post(address + '/upload/checker', {
         filename: filename
       })
@@ -502,6 +519,7 @@ export default {
               for (let t = 0; t < recover.uploads.length; t++) {
                 console.log(recover.uploads[t].filename);
                 if (recover.uploads[t].tempFileName === filet) {
+                  console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
                   recover.uploads[t].uploadStatus = false;
                   recover.uploads[t].uploadMessage = 'Ingestion has been completed';
                 }
@@ -525,7 +543,7 @@ export default {
 
           console.log('id ', this.userID + '*' + this.newFileName2);
         } else {
-          this.$refs.redDropZone.setOption('headers', {"extension": this.userID + '*' + 'default'});
+          this.$refs.redDropZone.setOption('headers', {"extension": this.userID + '*' + this.originalFilename});
           this.$refs.redDropZone.processQueue();
 
           console.log('id ', this.userID + '*' + this.newFileName2);
@@ -542,7 +560,7 @@ export default {
           this.$refs.blueDropZone.processQueue();
         }
       } else {
-        this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + 'default'});
+        this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + this.originalFilename});
         this.modal1 = false;
         if (this.newFileName) {
           this.$refs.blueDropZone.processQueue();
@@ -550,6 +568,12 @@ export default {
           this.$refs.blueDropZone.processQueue();
         }
       }
+    },
+    fileAdded(file){
+
+      let filebodyname = file.name.split('.');
+      console.log(filebodyname[0] , 'has been added to workspace');
+      this.originalFilename = filebodyname[0];
     }
   },
   mounted() {
