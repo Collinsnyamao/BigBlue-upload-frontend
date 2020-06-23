@@ -513,12 +513,24 @@ export default {
               }, 1000);
             } else if (response.data.status === true) {
               console.log('true');
+              console.log('response filename ', filename);
               let filestring = filename.split("*");
               let filet = filestring[1];
-              console.log(filet);
+              console.log('split file name',filet);
+              let fileextensionResponse = "." + filet.toLowerCase().split('.').pop();
+              let newOrigFileName = this.originalFilename + fileextensionResponse;
+              console.log('original file name',this.originalFilename + fileextensionResponse);
               for (let t = 0; t < recover.uploads.length; t++) {
-                console.log(recover.uploads[t].filename);
+                console.log('tempFileName',recover.uploads[t].filename);
                 if (recover.uploads[t].tempFileName === filet) {
+                  console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
+                  recover.uploads[t].uploadStatus = false;
+                  recover.uploads[t].uploadMessage = 'Ingestion has been completed';
+                }else if (recover.uploads[t].filename === filet) {
+                  console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
+                  recover.uploads[t].uploadStatus = false;
+                  recover.uploads[t].uploadMessage = 'Ingestion has been completed';
+                }else if (recover.uploads[t].filename === newOrigFileName) {
                   console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
                   recover.uploads[t].uploadStatus = false;
                   recover.uploads[t].uploadMessage = 'Ingestion has been completed';
