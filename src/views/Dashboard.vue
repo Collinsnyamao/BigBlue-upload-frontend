@@ -252,7 +252,8 @@ import SocialTrafficTable from './Dashboard/SocialTrafficTable';
 import PageVisitsTable from './Dashboard/PageVisitsTable';
 import axios from 'axios';
 
-let address = 'https://10.30.20.89:3002';
+let address = process.env.VUE_APP_SERVER_ADDRESS;
+let address2 = 'https://127.0.0.1:3002';
 export default {
   components: {
     LineChart,
