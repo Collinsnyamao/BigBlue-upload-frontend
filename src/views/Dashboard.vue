@@ -206,11 +206,12 @@
             <template slot="header">
               <h3 class="modal-title" id="exampleModalLabel2" style="margin-top: 15px; color: #407ec1;">Rename file</h3>
             </template>
+            <!--<p class="text text-danger" v-if="errorStatus2">{{ errorInfo2 }}</p>-->
             <div class="col-md-12">
               <div style="margin-bottom: 20px;">
                 {{ fileProps.filename }}
               </div>
-              <base-input placeholder="rename file" id="filenameinput" v-model="newFileName"></base-input>
+              <base-input placeholder="rename file" v-bind:error="errorInfo2" id="filenameinput" v-model="newFileName"></base-input>
               <p></p>
             </div>
             <template slot="footer">
@@ -268,7 +269,9 @@ export default {
       selected2: '',
       userID: '',
       errorStatus: '',
+      errorStatus2: '',
       errorInfo:'',
+      errorInfo2:'',
       originalFilename:'',
       modal0: false,
       fileProps: [],
@@ -525,15 +528,15 @@ export default {
                 if (recover.uploads[t].tempFileName === filet) {
                   console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
                   recover.uploads[t].uploadStatus = false;
-                  recover.uploads[t].uploadMessage = 'Ingestion has been completed';
+                  recover.uploads[t].uploadMessage = 'Ingestion complete!';
                 }else if (recover.uploads[t].filename === filet) {
                   console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
                   recover.uploads[t].uploadStatus = false;
-                  recover.uploads[t].uploadMessage = 'Ingestion has been completed';
+                  recover.uploads[t].uploadMessage = 'Ingestion complete!';
                 }else if (recover.uploads[t].filename === newOrigFileName) {
                   console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
                   recover.uploads[t].uploadStatus = false;
-                  recover.uploads[t].uploadMessage = 'Ingestion has been completed';
+                  recover.uploads[t].uploadMessage = 'Ingestion complete!';
                 }
               }
             }
@@ -552,18 +555,25 @@ export default {
         if (this.newFileName2) {
           this.$refs.redDropZone.setOption('headers', {"extension": this.userID + '*' + this.newFileName2});
           this.$refs.redDropZone.processQueue();
+          this.errorStatus = false;
 
           console.log('id ', this.userID + '*' + this.newFileName2);
         } else {
-          this.$refs.redDropZone.setOption('headers', {"extension": this.userID + '*' + this.originalFilename});
+          /*this.$refs.redDropZone.setOption('headers', {"extension": this.userID + '*' + this.originalFilename});
           this.$refs.redDropZone.processQueue();
 
-          console.log('id ', this.userID + '*' + this.newFileName2);
+          console.log('id ', this.userID + '*' + this.newFileName2);*/
+          console.log('empty filename');
+          this.errorStatus = true;
+          this.errorInfo = 'file name input empty';
         }
       }
     },
     startProcessingQueue2() {
       if (this.newFileName) {
+        console.log('name input set');
+        this.errorStatus2 = false;
+        this.errorInfo2 = 'file input set';
         this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + this.newFileName});
         this.modal1 = false;
         if (this.newFileName) {
@@ -572,12 +582,15 @@ export default {
           this.$refs.blueDropZone.processQueue();
         }
       } else {
-        this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + this.originalFilename});
-        this.modal1 = false;
+        /*this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + this.originalFilename});*/
+        this.modal1 = true;
+        console.log('empty');
+        this.errorStatus2 = true;
+        this.errorInfo2 = 'file name input empty';
         if (this.newFileName) {
-          this.$refs.blueDropZone.processQueue();
+          /*this.$refs.blueDropZone.processQueue();*/
         } else if (!this.newFileName) {
-          this.$refs.blueDropZone.processQueue();
+          /*this.$refs.blueDropZone.processQueue();*/
         }
       }
     },
@@ -633,5 +646,14 @@ export default {
 .dropzone .dz-message {
   margin: 8em 0;
   color: #407ec1;
+}
+.input-has-value-style {
+  border: 2px solid green;
+  background-color:lightgreen;
+}
+
+.input-no-value-style {
+  border: 2px solid red;
+  background-color:pink;
 }
 </style>
