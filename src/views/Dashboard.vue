@@ -252,7 +252,7 @@ import SocialTrafficTable from './Dashboard/SocialTrafficTable';
 import PageVisitsTable from './Dashboard/PageVisitsTable';
 import axios from 'axios';
 
-let address = 'https://10.30.20.89:3002';
+let address = 'https://127.0.0.1:3002';
 export default {
   components: {
     LineChart,
@@ -434,16 +434,22 @@ export default {
     },
     uploadFailed(file, message, error) {
       /*console.log(file, 'has failed uploading with error ', error , ' and message ' , message);*/
+      console.log('error', error);
+      console.log('message', message);
+      console.log('file', file);
     },
     uploadFailed2(file, message, error) {
       /*console.log(file, 'has failed uploading with error ', error , ' and message ' , message);*/
+      console.log('error', error);
+      console.log('message', message);
+      console.log('file', file);
     },
     uploadCompleted(response) {
       console.log(response, 'has completed the upload');
       let fileextension = "." + response.name.toLowerCase().split('.').pop();
       this.uploads.push({
         filename: response.name,
-        tempFileName: this.filenamechecker() + fileextension,
+        tempFileName: this.newFileName + fileextension,
         uploadStatus: true,
         uploadMessage: 'Uploading...',
         uploadTime: 500,
@@ -469,7 +475,7 @@ export default {
       let fileextension = "." + response.name.toLowerCase().split('.').pop();
       this.uploads.push({
         filename: response.name,
-        tempFileName: this.filenamechecker23() + fileextension,
+        tempFileName: this.newFileName2 + fileextension,
         uploadStatus: true,
         uploadMessage: 'Uploading...',
         uploadTime: 500,
@@ -516,7 +522,8 @@ export default {
               }, 1000);
             } else if (response.data.status === true) {
               console.log('true');
-              console.log('response filename ', filename);
+              console.log('response filename ', response.data.filename);
+              console.log('checker filename ', filename);
               let filestring = filename.split("*");
               let filet = filestring[1];
               console.log('split file name',filet);
@@ -524,17 +531,22 @@ export default {
               let newOrigFileName = this.originalFilename + fileextensionResponse;
               console.log('original file name',this.originalFilename + fileextensionResponse);
               for (let t = 0; t < recover.uploads.length; t++) {
-                console.log('tempFileName',recover.uploads[t].filename);
+                console.log('FileName',recover.uploads[t].filename);
+                console.log('tempFileName',recover.uploads[t].tempFileName);
+
+                console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
+                console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
+                console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
                 if (recover.uploads[t].tempFileName === filet) {
-                  console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
+                  console.log('match found for ...', filet ,'and ', recover.uploads[t].tempFileName);
                   recover.uploads[t].uploadStatus = false;
                   recover.uploads[t].uploadMessage = 'Ingestion complete!';
                 }else if (recover.uploads[t].filename === filet) {
-                  console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
+                  console.log('match for ...', filet ,'and ', recover.uploads[t].tempFileName);
                   recover.uploads[t].uploadStatus = false;
                   recover.uploads[t].uploadMessage = 'Ingestion complete!';
                 }else if (recover.uploads[t].filename === newOrigFileName) {
-                  console.log('checking ...', filet ,'and ', recover.uploads[t].tempFileName);
+                  console.log('match for ...', filet ,'and ', recover.uploads[t].tempFileName);
                   recover.uploads[t].uploadStatus = false;
                   recover.uploads[t].uploadMessage = 'Ingestion complete!';
                 }
