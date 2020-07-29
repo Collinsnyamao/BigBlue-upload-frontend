@@ -84,7 +84,7 @@
                       <span class="d-md-none">x</span>
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <!--<li class="nav-item">
                     <a class="nav-link py-2 px-3"
                        href="#"
                        @click="modal0 = true"
@@ -92,7 +92,7 @@
                       <span class="d-none d-md-block"><i class="ni ni-money-coins"></i> Financial</span>
                       <span class="d-md-none"><i class="ni ni-money-coins"></i></span>
                     </a>
-                  </li>
+                  </li>-->
                 </ul>
               </div>
             </div>
