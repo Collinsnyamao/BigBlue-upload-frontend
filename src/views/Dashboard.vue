@@ -311,10 +311,10 @@ export default {
         params: {'userID': 'xyz', 'fileWrite': 'aaa'},
         thumbnailHeight: 150,
         thumbnailMethod: 'crop',
-        autoProcessQueue: false,
+        autoProcessQueue: true,
         addRemoveLinks: true,
-        uploadMultiple: false,
-        maxFiles: 1
+        uploadMultiple: true,
+        maxFiles: 10
       },
       uploads: []
     };
@@ -328,8 +328,9 @@ export default {
       }
     },
     processingFile(file) {
+      this.startProcessingQueue2(file.name);
       console.log('processing ' + file.name);
-      this.modal1 = true;
+      //this.modal1 = true;
       this.fileProps.filename = file.name;
       let filebodyname2 = file.name.split('.');
       console.log(filebodyname2[0] , 'has been added to workspace');
@@ -381,14 +382,17 @@ export default {
               self.uploads[i].uploadStatus = true;
               self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
               let fileextension = "." + file.name.toLowerCase().split('.').pop();
-              console.log(self.userID + "*" + self.newFileName + fileextension);
-              if (self.newFileName === ''){
+              console.log(self.userID + "*" + file.name + fileextension);
+              self.checker( file.name);
+              console.log('check for ' + file.name);
+
+              /*if (self.newFileName === ''){
                 self.checker(self.userID + "*" + self.originalFilename + fileextension);
                 console.log('check for ' + self.userID + "*" + self.originalFilename + fileextension);
               }else {
                 self.checker(self.userID + "*" + self.newFileName + fileextension);
                 console.log(self.userID + "*" + self.newFileName + fileextension);
-              }
+              }*/
             } else if (response === 'file exists') {
               self.uploads[i].uploadStatus = false;
               self.uploads[i].uploadMessage = 'File already exists.';
@@ -415,11 +419,11 @@ export default {
               self.uploads[i].uploadStatus = true;
               self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
               let fileextension = "." + file.name.toLowerCase().split('.').pop();
-              console.log(self.userID + "*" + self.newFileName2 + fileextension);
+              console.log(self.userID + "*" + file.name + fileextension);
               if (self.newFileName2 === ''){
                 self.checker(self.userID + "*" + self.originalFilename + fileextension);
               }else {
-                self.checker(self.userID + "*" + self.newFileName2 + fileextension);
+                self.checker(self.userID + "*" + file.name + fileextension);
               }
               console.log('checking ', file.name);
             } else if (response === 'file exists') {
@@ -450,7 +454,7 @@ export default {
       let fileextension = "." + response.name.toLowerCase().split('.').pop();
       this.uploads.push({
         filename: response.name,
-        tempFileName: this.newFileName + fileextension,
+        tempFileName: response.name,
         uploadStatus: true,
         uploadMessage: 'Uploading...',
         uploadTime: 500,
@@ -476,7 +480,7 @@ export default {
       let fileextension = "." + response.name.toLowerCase().split('.').pop();
       this.uploads.push({
         filename: response.name,
-        tempFileName: this.newFileName2 + fileextension,
+        tempFileName: response.name,
         uploadStatus: true,
         uploadMessage: 'Uploading...',
         uploadTime: 500,
@@ -509,6 +513,7 @@ export default {
           });
     },
     checker(filename) {
+      filename = filename.replace('*','');
       console.log('checking with : ', filename);
       axios.post(address + '/upload/checker', {
         filename: filename
@@ -526,7 +531,7 @@ export default {
               console.log('response filename ', response.data.filename);
               console.log('checker filename ', filename);
               let filestring = filename.split("*");
-              let filet = filestring[1];
+              let filet = filename;
               console.log('split file name',filet);
               let fileextensionResponse = "." + filet.toLowerCase().split('.').pop();
               let newOrigFileName = this.originalFilename + fileextensionResponse;
@@ -582,30 +587,33 @@ export default {
         }
       }
     },
-    startProcessingQueue2() {
-      if (this.newFileName) {
+    startProcessingQueue2(filename) {
+      this.$refs.blueDropZone.processQueue();
+      console.log('processing queue 2');
+      /*if (this.newFileName) {
         console.log('name input set');
         this.errorStatus2 = false;
         this.errorInfo2 = 'file input set';
-        this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + this.newFileName});
-        this.modal1 = false;
-        if (this.newFileName) {
+        /!*this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + this.newFileName});*!/
+        //this.modal1 = false;
+
+        /!*if (this.newFileName) {
           this.$refs.blueDropZone.processQueue();
         } else if (!this.newFileName) {
           this.$refs.blueDropZone.processQueue();
-        }
+        }*!/
       } else {
-        /*this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + this.originalFilename});*/
+        /!*this.$refs.blueDropZone.setOption('headers', {"id": this.userID + '*' + this.originalFilename});*!/
         this.modal1 = true;
         console.log('empty');
         this.errorStatus2 = true;
         this.errorInfo2 = 'file name input empty';
         if (this.newFileName) {
-          /*this.$refs.blueDropZone.processQueue();*/
+          /!*this.$refs.blueDropZone.processQueue();*!/
         } else if (!this.newFileName) {
-          /*this.$refs.blueDropZone.processQueue();*/
+          /!*this.$refs.blueDropZone.processQueue();*!/
         }
-      }
+      }*/
     },
     fileAdded(file){
 
@@ -618,7 +626,7 @@ export default {
     this.initBigChart(0);
     this.getBanks();
     this.$refs.redDropZone.setOption('url', address + '/upload/financial');
-    this.$refs.redDropZone.setOption('autoProcessQueue', false);
+    this.$refs.redDropZone.setOption('autoProcessQueue', true);
     this.$refs.redDropZone.setOption('acceptedFiles', 'application/pdf');
   },
   created() {
