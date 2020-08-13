@@ -368,7 +368,14 @@ export default {
       this.bigLineChart.activeIndex = index;
     },
     uploadSuccess(file, response) {
-      console.log(file, 'has been uploaded ', ' response ', response);
+      let fileName = file.name;
+      fileName = fileName.replace('*','');
+      fileName = fileName.replace(' ','');
+      fileName = fileName.trim();
+      let pretext = fileName.split('.');
+      let pretext1 = pretext[0].replace(/[^a-zA-Z ]/g, "");
+      fileName = pretext1 + '.' + pretext[1];
+      console.log(fileName, 'has been uploaded ', ' response ', response);
       console.log(file.name);
       console.log(file.upload.filename);
       let self = this;
@@ -376,16 +383,16 @@ export default {
       setTimeout(function () {
         for (let i = 0; i < self.uploads.length; i++) {
 
-          if (self.uploads[i].filename == file.name) {
+          if (self.uploads[i].filename == fileName) {
             console.log('found one');
 
             if (response === 'file saved') {
               self.uploads[i].uploadStatus = true;
               self.uploads[i].uploadMessage = 'Saved... Awaiting ingestion...';
-              let fileextension = "." + file.name.toLowerCase().split('.').pop();
-              console.log(self.userID + "*" + file.name + fileextension);
-              self.checker( file.name);
-              console.log('check for ' + file.name);
+              let fileextension = "." + fileName.toLowerCase().split('.').pop();
+              console.log(self.userID + "*" + fileName + fileextension);
+              self.checker( fileName);
+              console.log('check for ' + fileName);
 
               /*if (self.newFileName === ''){
                 self.checker(self.userID + "*" + self.originalFilename + fileextension);
@@ -451,11 +458,18 @@ export default {
       console.log('file', file);
     },
     uploadCompleted(response) {
-      console.log(response, 'has completed the upload');
-      let fileextension = "." + response.name.toLowerCase().split('.').pop();
+      let responseName = response.name;
+      responseName = responseName.replace('*','');
+      responseName = responseName.replace(' ','');
+      responseName = responseName.trim();
+      let pretext = responseName.split('.');
+      let pretext1 = pretext[0].replace(/[^a-zA-Z ]/g, "");
+      responseName = pretext1 + '.' + pretext[1];
+      console.log(responseName, 'has completed the upload');
+      /*let fileextension = "." + response.name.toLowerCase().split('.').pop();*/
       this.uploads.push({
-        filename: response.name,
-        tempFileName: response.name,
+        filename: responseName,
+        tempFileName: responseName,
         uploadStatus: true,
         uploadMessage: 'Uploading...',
         uploadTime: 500,
@@ -515,6 +529,11 @@ export default {
     },
     checker(filename) {
       filename = filename.replace('*','');
+      filename = filename.replace(' ','');
+      filename = filename.trim();
+      let pretext = filename.split('.');
+      let pretext1 = pretext[0].replace(/[^a-zA-Z ]/g, "");
+      filename = pretext1 + '.' + pretext[1];
       console.log('checking with : ', filename);
       axios.post(address + '/upload/checker', {
         filename: filename
