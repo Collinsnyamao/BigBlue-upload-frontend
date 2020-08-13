@@ -373,7 +373,7 @@ export default {
       fileName = fileName.replace(' ','');
       fileName = fileName.trim();
       let pretext = fileName.split('.');
-      let pretext1 = pretext[0].replace(/[^a-zA-Z ]/g, "");
+      let pretext1 = pretext[0].replace(/[^a-zA-Z0-9-_ ]/g, "");
       fileName = pretext1 + '.' + pretext[1];
       console.log(fileName, 'has been uploaded ', ' response ', response);
       console.log(file.name);
@@ -463,7 +463,7 @@ export default {
       responseName = responseName.replace(' ','');
       responseName = responseName.trim();
       let pretext = responseName.split('.');
-      let pretext1 = pretext[0].replace(/[^a-zA-Z ]/g, "");
+      let pretext1 = pretext[0].replace(/[^a-zA-Z0-9-_ ]/g, "");
       responseName = pretext1 + '.' + pretext[1];
       console.log(responseName, 'has completed the upload');
       /*let fileextension = "." + response.name.toLowerCase().split('.').pop();*/
@@ -532,7 +532,7 @@ export default {
       filename = filename.replace(' ','');
       filename = filename.trim();
       let pretext = filename.split('.');
-      let pretext1 = pretext[0].replace(/[^a-zA-Z ]/g, "");
+      let pretext1 = pretext[0].replace(/[^a-zA-Z0-9-_ ]/g, "");
       filename = pretext1 + '.' + pretext[1];
       console.log('checking with : ', filename);
       axios.post(address + '/upload/checker', {
