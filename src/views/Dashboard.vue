@@ -328,13 +328,13 @@ export default {
       }
     },
     processingFile(file) {
-      this.startProcessingQueue2(file.name);
       console.log('processing ' + file.name);
       //this.modal1 = true;
       this.fileProps.filename = file.name;
       let filebodyname2 = file.name.split('.');
       console.log(filebodyname2[0] , 'has been added to workspace');
       this.originalFilename = filebodyname2[0];
+      this.$refs.processQueue();
     },
     /*renameFile(file) {
       console.log("renameFile", file);
@@ -372,6 +372,7 @@ export default {
       console.log(file.name);
       console.log(file.upload.filename);
       let self = this;
+      this.$refs.blueDropZone.removeAllFiles();
       setTimeout(function () {
         for (let i = 0; i < self.uploads.length; i++) {
 
@@ -587,9 +588,10 @@ export default {
         }
       }
     },
-    startProcessingQueue2(filename) {
-      this.$refs.blueDropZone.processQueue();
+    startProcessingQueue2() {
+
       console.log('processing queue 2');
+      this.$refs.blueDropZone.processQueue();
       /*if (this.newFileName) {
         console.log('name input set');
         this.errorStatus2 = false;
@@ -618,6 +620,7 @@ export default {
     fileAdded(file){
 
       let filebodyname = file.name.split('.');
+      this.startProcessingQueue();
       console.log(filebodyname[0] , 'has been added to workspace');
       this.originalFilename = filebodyname[0];
     }
@@ -626,7 +629,6 @@ export default {
     this.initBigChart(0);
     this.getBanks();
     this.$refs.redDropZone.setOption('url', address + '/upload/financial');
-    this.$refs.redDropZone.setOption('autoProcessQueue', true);
     this.$refs.redDropZone.setOption('acceptedFiles', 'application/pdf');
   },
   created() {
