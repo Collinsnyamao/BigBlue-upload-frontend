@@ -7,8 +7,7 @@ module.exports = {
   devServer: {
     https: {
       key: fs.readFileSync('./certs/localhost.key'),
-      cert: fs.readFileSync('./certs/localhost.crt'),
-      passphrase: 'a11Black$'
+      cert: fs.readFileSync('./certs/localhost.cert')
     },
     clientLogLevel: 'silent'
   },
