@@ -1,12 +1,13 @@
 const webpack = require('webpack');
 const fs = require('fs');
+// eslint-disable-next-line no-unused-vars
 const isProd = process.env.NODE_ENV === "production";
 
 module.exports = {
   devServer: {
     https: {
       key: fs.readFileSync('./certs/localhost.key'),
-      cert: fs.readFileSync('./certs/localhost.cert'),
+      cert: fs.readFileSync('./certs/localhost.crt'),
       passphrase: 'a11Black$'
     },
     clientLogLevel: 'silent'
